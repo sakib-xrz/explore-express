@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -30,24 +30,111 @@ async function run() {
     const db = await client.db("explore_express_db");
     const Product = db.collection("products");
 
-    // write business logic here
     // PRODUCTS
     // Create products
     app.post("/products", async (req, res) => {
-      const payload = req.body;
-      const result = await Product.insertOne(payload);
+      const payload = { _id: new ObjectId(), ...req.body };
+      await Product.insertOne(payload);
 
-      return res.json({
-        statusCode: 201,
+      return res.status(201).json({
         success: true,
+        message: "Product create successful",
+        data: payload,
+      });
+    });
+
+    // Get all products
+    app.get("/products", async (_req, res) => {
+      const result = await Product.find().toArray();
+
+      return res.status(200).json({
+        success: true,
+        message: "Products retrieved successful",
         data: result,
       });
     });
 
-    // app.get("/products", async (_req, res) => {
-    //   const products = await Product.find().toArray();
-    //   console.log("products from database", products);
-    // });
+    // Get single product
+    app.get("/products/:id", async (req, res) => {
+      const { id } = req.params;
+
+      const result = await Product.findOne({
+        _id: new ObjectId(id),
+      });
+
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Product retrieved successful",
+        data: result,
+      });
+    });
+
+    // Update single product
+    app.patch("/products/:id", async (req, res) => {
+      const { id } = req.params;
+      const payload = req.body;
+
+      const product = await Product.findOne({
+        _id: new ObjectId(id),
+      });
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
+      }
+
+      const result = await Product.findOneAndUpdate(
+        {
+          _id: new ObjectId(id),
+        },
+        {
+          $set: {
+            name: payload.name || product.name,
+            price: payload.price || product.price,
+          },
+        },
+        { returnDocument: "after" }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Product updated successful",
+        data: result,
+      });
+    });
+
+    // Delete single product
+    app.delete("/products/:id", async (req, res) => {
+      const { id } = req.params;
+
+      const product = await Product.findOne({
+        _id: new ObjectId(id),
+      });
+
+      if (!product) {
+        return res.json({
+          data: null,
+        });
+      }
+
+      await Product.deleteOne({
+        _id: new ObjectId(id),
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Product deleted successful",
+      });
+    });
 
     await db.command({ ping: 1 });
     console.log("Connected to MongoDB successfully!");
