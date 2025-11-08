@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "65817428-5388-40a2-b99e-68b7911d775c",
+		"name": "Explore Express Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49904554",
+		"_collection_link": "https://mhkmehedihassan-2458109.postman.co/workspace/Mehedi-Hasan's-Workspace~09aa3ca5-75d4-4b50-8839-aec7dae2a611/collection/49904554-65817428-5388-40a2-b99e-68b7911d775c?action=share&source=collection_link&creator=49904554"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"iPhone 17 Pro Max\",\r\n    \"price\": 900\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
