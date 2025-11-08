@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "65817428-5388-40a2-b99e-68b7911d775c",
+		"_postman_id": "9564f82f-61a5-4f82-8348-abe460a935a6",
 		"name": "Explore Express Backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "49904554",
-		"_collection_link": "https://mhkmehedihassan-2458109.postman.co/workspace/Mehedi-Hasan's-Workspace~09aa3ca5-75d4-4b50-8839-aec7dae2a611/collection/49904554-65817428-5388-40a2-b99e-68b7911d775c?action=share&source=collection_link&creator=49904554"
+		"_exporter_id": "25329986"
 	},
 	"item": [
 		{
@@ -33,6 +32,168 @@
 							"port": "8000",
 							"path": [
 								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/products/690ec834d01696dec9947bf4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products",
+								"690ec834d01696dec9947bf4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"name\": \"iPhone 18 Pro Max\"\r\n    \"price\": 1300\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/products/690f2098a15206a7db928c14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products",
+								"690f2098a15206a7db928c14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/products/690f2308b0c47c83d47ca9ef",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"products",
+								"690f2308b0c47c83d47ca9ef"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wishlist",
+			"item": [
+				{
+					"name": "Create wishlist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user@example.com\",\r\n    \"productId\": \"690ec834d01696dec9947bf4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/wishlists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"wishlists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my wishlists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/wishlists/user@example.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"wishlists",
+								"user@example.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete wishlist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/wishlists/690ec834d01696dec9947bf4/user@example.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"wishlists",
+								"690ec834d01696dec9947bf4",
+								"user@example.com"
 							]
 						}
 					},

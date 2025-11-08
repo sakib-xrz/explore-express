@@ -1,9 +1,11 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
+const admin = require("firebase-admin");
 require("dotenv").config();
 
 const URI = process.env.MONGODB_URI;
+const FIREBASE_SDK = require("./firebase-adminsdk.json");
 
 const client = new MongoClient(URI, {
   serverApi: {
@@ -13,12 +15,49 @@ const client = new MongoClient(URI, {
   },
 });
 
+admin.initializeApp({
+  credential: admin.credential.cert(FIREBASE_SDK),
+});
+
 const app = express();
 
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+const authGuard = async (req, res, next) => {
+  const { authorization: bearerToken } = req.headers;
+
+  if (!bearerToken) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized access",
+    });
+  }
+
+  const token = bearerToken.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized access",
+    });
+  }
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.log(error);
+
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden access",
+    });
+  }
+};
 
 app.get("/", (_req, res) => {
   res.send("Hello World!");
@@ -28,7 +67,10 @@ async function run() {
   try {
     await client.connect();
     const db = await client.db("explore_express_db");
+
+    // Collections
     const Product = db.collection("products");
+    const Wishlist = db.collection("wishlists");
 
     // PRODUCTS
     // Create products
@@ -133,6 +175,52 @@ async function run() {
       return res.status(200).json({
         success: true,
         message: "Product deleted successful",
+      });
+    });
+
+    // WISHLISTS
+    // Create wishlist
+    app.post("/wishlists", async (req, res) => {
+      const payload = { _id: new ObjectId(), ...req.body };
+      await Wishlist.insertOne(payload);
+
+      return res.status(201).json({
+        success: true,
+        message: "Wishlist created successful",
+        data: payload,
+      });
+    });
+
+    // Get my wishlists
+    app.get("/wishlists/my-wishlist", authGuard, async (req, res) => {
+      const { email } = req.user;
+
+      const result = await Wishlist.find({ email }).toArray();
+
+      return res.status(200).json({
+        success: true,
+        message: "Wishlists retrieved successful",
+        data: result,
+      });
+    });
+
+    // Delete wishlist
+    app.delete("/wishlists/:id", authGuard, async (req, res) => {
+      const { id } = req.params;
+      const { email } = req.user;
+      const result = await Wishlist.findOne({ _id: new ObjectId(id), email });
+
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          message: "Wishlist not found",
+        });
+      }
+      await Wishlist.deleteOne({ _id: new ObjectId(id), email });
+
+      return res.status(200).json({
+        success: true,
+        message: "Wishlist deleted successful",
       });
     });
 
